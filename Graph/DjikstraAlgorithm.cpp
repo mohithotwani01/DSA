@@ -17,9 +17,19 @@ void printGraph(vector<vector<pair<int, int>>> graph) {
     }
 }
 
+void printPath(int dest, vector<int> parent) {
+    if (parent[dest] == -1) {
+        return;
+    }
+    printPath(parent[dest], parent);
+    cout << "-->" << dest;
+}
+
 int dijkstraAlgorithm(vector<vector<pair<int,int>>> graph, int src, int dest) {
+    // Useful Data Structures
     vector<int> dist(graph.size(), INT_MAX);
     set<pair<int, int>> s;
+    vector<int> parent(graph.size(), -1);
 
     // Initialization
     dist[src] = 0;
@@ -46,6 +56,7 @@ int dijkstraAlgorithm(vector<vector<pair<int,int>>> graph, int src, int dest) {
                     s.erase(f);
                 }
 
+                parent[nbr] = node;
                 dist[nbr] = distTillNow + distNode;
                 s.insert({dist[nbr], nbr});
             }
@@ -56,9 +67,11 @@ int dijkstraAlgorithm(vector<vector<pair<int,int>>> graph, int src, int dest) {
     for (int i = 1; i < dist.size(); i++) {
         cout << "Shortest dist from " << src << " to " << i << " is " << dist[i] << endl;
     }
+    cout << src;
+    printPath(dest, parent);
+    cout << endl;
     return dist[dest];
 }
-
 
 
 int main() {
@@ -72,5 +85,6 @@ int main() {
         cin >> u >> v >> w;
         addEdge(graph, u, v, w);
     }
-    cout << dijkstraAlgorithm(graph, 1, v) << endl;
+    int src = 1, dest = v;
+    cout << dijkstraAlgorithm(graph, src, dest) << endl;
 }
